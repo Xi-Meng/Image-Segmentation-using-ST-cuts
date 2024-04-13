@@ -13,14 +13,10 @@ import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-a','--algo', type=str, required=True)
-parser.add_argument('-sp','--sp_en', type=str, required=True)
 parser.add_argument('-i','--img', type=str, required=True)
-parser.add_argument('-ac','--acc', type=str, required=True)
 
 args = parser.parse_args()
 algo = args.algo
-sp_en = args.sp_en
-acc = args.acc
 
 drawing = False
 mode = "ob"
@@ -167,11 +163,7 @@ def main():
 	I_dummy = np.copy(I)
 
 	h, w, c = I.shape
-	# global sp_en
-	if sp_en == "y":
-		region_size = 20
-	else:
-		region_size = 10
+	region_size = 20  # affect time, setting 10 tasks much more
 
 	cv2.namedWindow('Mark the object and background')
 	cv2.setMouseCallback('Mark the object and background', mark_seeds)
@@ -259,8 +251,10 @@ def main():
 		source_tree, target_tree = RG.graph['trees']
 		partition = (set(source_tree), set(G) - set(source_tree))
 		sp_label_list = partition[0]
+		subtitle = "boykov kolmogorov"
 	else:
 		sp_label_list = ff.ford_fulkerson(G, s, t)
+		subtitle = "ford fulkerson"
 
 	F = np.zeros((h, w), dtype=np.uint8)
  
@@ -270,22 +264,6 @@ def main():
 			F[i][j] = 1
 	Final = cv2.bitwise_and(I, I, mask=F)
 	print("------------------\n","Time taken : ",time.process_time() - start,"\n------------------")
-	global acc 
-	if(acc=="y"):
-		mask_actual_img = cv2.imread('./masks/bunny_mask.png')
-		print(inputfile.split('.'))
-		mask_actual = np.zeros((h,w))
-		for i in range(h):
-			for j in range(w):
-				if mask_actual_img[i][j][0]  == 255:
-					mask_actual[i][j] = 1
-
-
-
-		accuracy_mat = np.logical_xor(F, mask_actual) 
-	 
-		accuracy = np.sum(accuracy_mat)
-		print("Accuracy: ", 100 - accuracy/(h*w), "%")
 
 	sp_lab=np.zeros(I.shape,dtype=np.uint8)
 	for sp in SP_list:
@@ -294,32 +272,19 @@ def main():
 			sp_lab[i][j]=sp.mean_lab
 	sp_lab=cv2.cvtColor(sp_lab, cv2.COLOR_Lab2RGB)
 	
-	plt.subplot(2,2,1)
+	plt.subplot(1,2,1)
 	plt.tick_params(labelcolor='black', top='off', bottom='off', left='off', right='off')
 	plt.imshow(I[...,::-1])
 	plt.axis("off")
-	plt.xlabel("Input image")
+	plt.title("Input image")
 
-	plt.subplot(2,2,2)
-	plt.tick_params(labelcolor='none', top='off', bottom='off', left='off', right='off')
-	plt.imshow(I_marked[...,::-1])
-	plt.axis("off")
-	plt.xlabel("Super-pixel boundaries and centroid")
-
-	plt.subplot(2,2,3)
-	plt.imshow(sp_lab)
-	plt.axis("off")
-	plt.xlabel("Super-pixel representation")
-
-
-	plt.subplot(2,2,4)
+	plt.subplot(1,2,2)
 	plt.imshow(Final[...,::-1])
 	plt.axis("off")
-	plt.xlabel("Output Image")
-
-
+	plt.title("Output Image using %s algorithm" % subtitle)
 	
-	cv2.imwrite("out.png",Final)
+	plt.tight_layout()
+	cv2.imwrite("./output/out.png",Final)
 	plt.show()
 
 if __name__ == '__main__':
