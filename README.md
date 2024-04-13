@@ -26,10 +26,10 @@ The main code used to produce the segmentation results. command-line arguments
 **Example:** python fast_seg.py -i ./images/bunny.png -a bk
 
 ## Instructions
-Press the "o" key on your keyboard to start marking an object.
-Press the "b" key on your keyboard to start marking the background.
-When you have finished marking, press the esc key on your keyboard
-Marking process, can be roughly marked, only need to draw part of the line
+The Marking process can be roughly marked, only need to draw some lines.
+- Press the "o" key on your keyboard to start marking an object.
+- Press the "b" key on your keyboard to start marking the background.
+- When you have finished marking, press the esc key on your keyboard.
 
 ## Results 
 ![alt text](output/result1.png)
