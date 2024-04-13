@@ -20,8 +20,8 @@ Extension need not be png
 The main code used to produce the segmentation results. command-line arguments
 1. **-i / --img** : -i <path to input image>
 2. **-a / --algo** : values “bk”/”ff”
-3. **“bk”** - used to perform segmentation using boykov kolmogorov algorithm
-4. **“ff”** - used to perform segmentation using ford fulkerson algorithm -s/ --sp_en : values“y”/”n”
+-  **“bk”** - used to perform segmentation using boykov kolmogorov algorithm
+-  **“ff”** - used to perform segmentation using ford fulkerson algorithm
 
 **Example:** python fast_seg.py -i ./images/bunny.png -a bk
 
